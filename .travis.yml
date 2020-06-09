@@ -1,0 +1,80 @@
+---
+language: bash
+
+services:
+  - docker
+
+cache: $TRAVIS_CACHE
+
+# Only build on master
+branches:
+  only:
+    - master
+
+stages:
+  - build
+  - name: multiarch
+    if: type IN (push, api, cron)
+
+jobs:
+  include:
+    - stage: build
+      name: Build amd64 image
+      os: linux
+      arch: amd64
+      services:
+        - docker
+      script:
+        - ./fetch-operator-bundles.sh
+        - VCS_URL=https://github.com/IBM/ibm-common-service-catalog
+        - VCS_REF=$(git rev-parse HEAD)
+        - docker build -t quay.io/opencloudio/ibm-common-service-catalog:${TRAVIS_COMMIT:0:8}-amd64 --build-arg VCS_REF=${VCS_REF} --build-arg VCS_URL=${VCS_URL} -f Dockerfile .
+        - |
+          if [[ "$TRAVIS_EVENT_TYPE" =~  (cron|api|push) ]]; then
+            docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD quay.io
+            docker push quay.io/opencloudio/ibm-common-service-catalog:${TRAVIS_COMMIT:0:8}-amd64
+          fi
+    - stage: build
+      name: Build ppc64le image
+      os: linux
+      arch: ppc64le
+      services:
+        - docker
+      script:
+        - ./fetch-operator-bundles.sh
+        - VCS_URL=https://github.com/IBM/ibm-common-service-catalog
+        - VCS_REF=$(git rev-parse HEAD)
+        - docker build -t quay.io/opencloudio/ibm-common-service-catalog:${TRAVIS_COMMIT:0:8}-ppc64le --build-arg VCS_REF=${VCS_REF} --build-arg VCS_URL=${VCS_URL} -f Dockerfile .
+        - |
+          if [[ "$TRAVIS_EVENT_TYPE" =~  (cron|api|push) ]]; then
+            docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD quay.io
+            docker push quay.io/opencloudio/ibm-common-service-catalog:${TRAVIS_COMMIT:0:8}-ppc64le
+          fi
+    - stage: build
+      name: Build s390x image
+      os: linux
+      arch: s390x
+      services:
+        - docker
+      script:
+        - ./fetch-operator-bundles.sh
+        - VCS_URL=https://github.com/IBM/ibm-common-service-catalog
+        - VCS_REF=$(git rev-parse HEAD)
+        - docker build -t quay.io/opencloudio/ibm-common-service-catalog:${TRAVIS_COMMIT:0:8}-s390x --build-arg VCS_REF=${VCS_REF} --build-arg VCS_URL=${VCS_URL} -f Dockerfile .
+        - |
+          if [[ "$TRAVIS_EVENT_TYPE" =~  (cron|api|push) ]]; then
+            docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD quay.io
+            docker push quay.io/opencloudio/ibm-common-service-catalog:${TRAVIS_COMMIT:0:8}-s390x
+          fi
+    - stage: multiarch
+      name: Build multiarch image
+      os: linux
+      arch: amd64
+      services:
+        - docker
+      script:
+        - docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD quay.io
+        - curl -L -o /tmp/manifest-tool https://github.com/estesp/manifest-tool/releases/download/v1.0.0/manifest-tool-linux-amd64
+        - chmod +x /tmp/manifest-tool
+        - sudo /tmp/manifest-tool push from-args --platforms linux/amd64,linux/ppc64le,linux/s390x --template quay.io/opencloudio/ibm-common-service-catalog:${TRAVIS_COMMIT:0:8}-ARCH --target quay.io/opencloudio/ibm-common-service-catalog:${TRAVIS_COMMIT:0:8}
+        - sudo /tmp/manifest-tool push from-args --platforms linux/amd64,linux/ppc64le,linux/s390x --template quay.io/opencloudio/ibm-common-service-catalog:${TRAVIS_COMMIT:0:8}-ARCH --target quay.io/opencloudio/ibm-common-service-catalog:latest

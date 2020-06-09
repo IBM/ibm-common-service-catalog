@@ -38,7 +38,7 @@ COPY manifests manifests
 RUN /bin/initializer -o ./bundles.db
 
 
-FROM alpine
+FROM scratch
 
 ARG VCS_REF
 ARG VCS_URL
@@ -55,6 +55,7 @@ LABEL org.label-schema.vendor="IBM" \
   description="The Operator CatalogSource image to host all IBM Common Services Operators" \
   summary="The Operator CatalogSource image to host all IBM Common Services Operators"
 
+COPY --from=builder /tmp /tmp
 COPY --from=builder bundles.db /bundles.db
 COPY --from=operator-registry /bin/registry-server /bin/grpc_health_probe /bin/
 

@@ -25,6 +25,8 @@ jobs:
       services:
         - docker
       script:
+        - sudo apt update
+        - sudo apt -y install unzip
         - ./fetch-operator-bundles.sh
         - VCS_URL=https://github.com/IBM/ibm-common-service-catalog
         - VCS_REF=$(git rev-parse HEAD)
@@ -41,6 +43,8 @@ jobs:
       services:
         - docker
       script:
+        - sudo apt update
+        - sudo apt -y install unzip
         - ./fetch-operator-bundles.sh
         - VCS_URL=https://github.com/IBM/ibm-common-service-catalog
         - VCS_REF=$(git rev-parse HEAD)
@@ -57,6 +61,8 @@ jobs:
       services:
         - docker
       script:
+        - sudo apt update
+        - sudo apt -y install unzip
         - ./fetch-operator-bundles.sh
         - VCS_URL=https://github.com/IBM/ibm-common-service-catalog
         - VCS_REF=$(git rev-parse HEAD)
@@ -78,3 +84,6 @@ jobs:
         - chmod +x /tmp/manifest-tool
         - sudo /tmp/manifest-tool push from-args --platforms linux/amd64,linux/ppc64le,linux/s390x --template quay.io/opencloudio/ibm-common-service-catalog:${TRAVIS_COMMIT:0:8}-ARCH --target quay.io/opencloudio/ibm-common-service-catalog:${TRAVIS_COMMIT:0:8}
         - sudo /tmp/manifest-tool push from-args --platforms linux/amd64,linux/ppc64le,linux/s390x --template quay.io/opencloudio/ibm-common-service-catalog:${TRAVIS_COMMIT:0:8}-ARCH --target quay.io/opencloudio/ibm-common-service-catalog:latest
+
+notifications:
+  email: false

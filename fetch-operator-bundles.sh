@@ -1,4 +1,11 @@
 #!/bin/bash
+#
+# Licensed Materials - Property of IBM
+# (C) Copyright IBM Corporation 2020. All Rights Reserved.
+# US Government Users Restricted Rights - Use, duplication or disclosure restricted by GSA ADP Schedule Contract with IBM Corp.
+#
+# This script is used to fetch packages from github.com/IBM
+#
 
 CS_OPERATORS=(
     ibm-auditlogging-operator

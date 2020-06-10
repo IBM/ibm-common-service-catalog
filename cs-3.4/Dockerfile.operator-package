@@ -1,0 +1,11 @@
+FROM alpine as builder
+
+RUN apk --no-cache add bash curl git
+
+COPY download-operator-package.sh /download-operator-package.sh
+
+RUN /download-operator-package.sh
+
+FROM scratch
+
+COPY --from=builder manifests /manifests

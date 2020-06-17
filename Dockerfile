@@ -29,16 +29,10 @@ RUN cp /build/bin/opm /bin/opm \
     && cp /build/bin/configmap-server /bin/configmap-server \
     && cp /build/bin/registry-server /bin/registry-server
 
-# Workaround for 3.4, will remove after 3.4 release
-FROM quay.io/opencloudio/ibm-common-service-catalog:3.4.0-operator-package as operator-package
-
 FROM alpine AS builder
 
+COPY manifests manifests
 COPY --from=operator-registry /bin/initializer /bin/initializer
-
-# COPY manifests manifests
-# Workaround for 3.4, will remove after 3.4 release
-COPY --from=operator-package /manifests manifests
 
 RUN /bin/initializer -o ./bundles.db
 

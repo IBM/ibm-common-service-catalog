@@ -83,7 +83,8 @@ jobs:
         - curl -L -o /tmp/manifest-tool https://github.com/estesp/manifest-tool/releases/download/v1.0.0/manifest-tool-linux-amd64
         - chmod +x /tmp/manifest-tool
         - sudo /tmp/manifest-tool push from-args --platforms linux/amd64,linux/ppc64le,linux/s390x --template quay.io/opencloudio/ibm-common-service-catalog:${TRAVIS_COMMIT:0:8}-ARCH --target quay.io/opencloudio/ibm-common-service-catalog:${TRAVIS_COMMIT:0:8}
-        - sudo /tmp/manifest-tool push from-args --platforms linux/amd64,linux/ppc64le,linux/s390x --template quay.io/opencloudio/ibm-common-service-catalog:${TRAVIS_COMMIT:0:8}-ARCH --target quay.io/opencloudio/ibm-common-service-catalog:latest
+        - sudo /tmp/manifest-tool push from-args --platforms linux/amd64,linux/ppc64le,linux/s390x --template quay.io/opencloudio/ibm-common-service-catalog:${TRAVIS_COMMIT:0:8}-ARCH --target quay.io/opencloudio/ibm-common-service-catalog:dev-latest
+        - sudo /tmp/manifest-tool push from-args --platforms linux/amd64,linux/ppc64le,linux/s390x --template quay.io/opencloudio/ibm-common-service-catalog:${TRAVIS_COMMIT:0:8}-ARCH --target quay.io/opencloudio/ibm-common-service-catalog:dev-$(date +%Y%m%d)
 
 notifications:
   email: false
